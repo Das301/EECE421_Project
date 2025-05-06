@@ -1,0 +1,2 @@
+LOAD R3, 0(R5)
+ADD R4, R3, R2

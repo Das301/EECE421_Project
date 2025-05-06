@@ -10,6 +10,11 @@ class Issue_Unit {
 
     public:
         Issue_Unit(std::string name);
+
+        void Reset_program(std::string name="");
+
+        void Fetch_Decode_Instruction();
+
         void Current_Program_Info();
 };
 

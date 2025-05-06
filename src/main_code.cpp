@@ -1,11 +1,11 @@
 #include <iostream>
-//#include "Issue_Unit.h"
+#include "Issue_Unit.h"
 
 using namespace std;
 
 int main() {
-    cout << "Hello world";
-    //Issue_Unit unit("sample_code.txt");
-    //unit.Current_Program_Info();
+    cout << "Hello world" << endl;
+    Issue_Unit unit("sample_code.txt");
+    unit.Current_Program_Info();
     return 0;
 }

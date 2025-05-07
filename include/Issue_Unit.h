@@ -13,7 +13,9 @@ class Issue_Unit {
 
         void Reset_program(std::string name="");
 
-        void Fetch_Decode_Instruction();
+        void Fetch_Decode_Instruction(int (&instruct)[4]);
+
+        void Decode_Instruction(std::string instruction, int (&instruct)[4]);
 
         void Current_Program_Info();
 };

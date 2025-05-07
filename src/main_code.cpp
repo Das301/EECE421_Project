@@ -35,8 +35,11 @@ int main() {
         } else{
             if(file_checking(file_name)){
                 
+                //this part to be controlled by master processor
                 Issue_Unit unit(file_name);
                 unit.Current_Program_Info();
+                int instruct[4] = {-1, -1, -1, -1};
+                unit.Fetch_Decode_Instruction(instruct);
 
                 cout << "Enter the name of the next program file (must be .txt) or QUIT to leave the simulator: ";
             } else {

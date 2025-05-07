@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Issue_Unit.h"
 #include "Register_File.h"
+#include "Register_Status.h"
 #include <string>
 
 using namespace std;
@@ -39,6 +40,7 @@ int main() {
                 //this part to be controlled by master processor
                 Issue_Unit unit(file_name);
                 Register_File reg_unit;
+                Register_Status reg_stat_unit;
                 int instruct[4] = {-1, -1, -1, -1};
                 unit.Fetch_Decode_Instruction(instruct);
 

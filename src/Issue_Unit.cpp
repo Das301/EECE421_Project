@@ -23,7 +23,7 @@ void Issue_Unit::Reset_program(std::string name) {
 
 void Issue_Unit::Decode_Instruction(std::string instruction, int (&instruct)[4]) {
     unordered_map<string, int> ops = {
-        {"ADD", 1}, {"SUB", 2}, {"MUL", 3}, {"DIV", 4}, {"LOAD", 5}, {"STORE", 6}
+        {"ADD", 1}, {"SUB", 2}, {"MUL", 3}, {"DIV", 4}, {"STORE", 5}, {"LOAD", 6}
     };
 
     unordered_map<string, int> registers = {

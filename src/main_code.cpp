@@ -2,6 +2,8 @@
 #include "Issue_Unit.h"
 #include "Register_File.h"
 #include "Register_Status.h"
+#include "Memory_Unit.h"
+#include "Functional_Unit.h"
 #include <string>
 
 using namespace std;
@@ -41,8 +43,11 @@ int main() {
                 Issue_Unit unit(file_name);
                 Register_File reg_unit;
                 Register_Status reg_stat_unit;
+                Functional_Unit MUL_DIV(2, 10, 20);
+                Memory_Unit Memory;
                 int instruct[4] = {-1, -1, -1, -1};
                 unit.Fetch_Decode_Instruction(instruct);
+                int result[2] = {-1, -1};
 
                 cout << "Enter the name of the next program file (must be .txt) or QUIT to leave the simulator: ";
             } else {

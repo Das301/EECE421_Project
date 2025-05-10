@@ -19,6 +19,7 @@ class Registration_Entry {
     public:
         Registration_Entry(int ID);
 
+        bool Check_Busy();
         bool Check_Available();
         bool Operands_Ready();
 

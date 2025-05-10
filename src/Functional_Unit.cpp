@@ -30,9 +30,9 @@ void Functional_Unit::Set_Operation(int operand1, int operand2, int operand3, bo
 }
 
 void Functional_Unit::Update_Operation_Status(){
-    if(operation && curr_cycle > op1_cycles) {
+    if(operation && curr_cycle >= op1_cycles) {
         output_ready==true;
-    } else if (!operation && curr_cycle > op2_cycles) {
+    } else if (!operation && curr_cycle >= op2_cycles) {
         output_ready==true;
     } else {
         curr_cycle++;
@@ -41,6 +41,10 @@ void Functional_Unit::Update_Operation_Status(){
 
 bool Functional_Unit::Check_Available() {
     return !busy;
+}
+
+bool Functional_Unit::Check_Busy() {
+    return busy;
 }
 
 bool Functional_Unit::Check_Output() {

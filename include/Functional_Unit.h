@@ -34,6 +34,7 @@ class Functional_Unit {
 
         bool Check_Available();
         bool Check_Output();
+        bool Check_Busy();
 
         void Return_Result(int (&arr_result)[2], Memory_Unit* memory=nullptr);
 

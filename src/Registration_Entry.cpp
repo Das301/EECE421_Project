@@ -4,13 +4,17 @@ Registration_Entry::Registration_Entry(int ID) {
     station_ID = ID;
 }
 
+bool Registration_Entry::Check_Busy() {
+    return busy;
+}
+
 bool Registration_Entry::Check_Available() {
     return !busy;
 }
 
 bool Registration_Entry::Operands_Ready() {
     if (op==5) {
-        return (1==0 && Q2==0 && Q_store==0);
+        return (Q1==0 && Q2==0 && Q_store==0);
     }
     return (Q1==0 && Q2==0);
 }
@@ -33,10 +37,13 @@ void Registration_Entry::Set_Operand_Source(int Q_index, int value) {
 void Registration_Entry::Set_Operand(int V_index, int value) {
     if (V_index == 1) {
         V1 = value;
+        Q1=0;
     } else if (V_index == 2) {
         V2 = value;
+        Q2=0;
     } else {
         V_store = value;
+        Q_store = 0;
     }
 }
 

@@ -6,6 +6,11 @@
 
 using namespace std;
 
+Issue_Unit::Issue_Unit() {
+    instructions_over = false;
+    instruction_counter = 1;
+}
+
 Issue_Unit::Issue_Unit(std::string name)
 {
     file_name = name;
@@ -198,7 +203,7 @@ void Issue_Unit::Decode_Instruction(std::string instruction, int (&instruct)[4])
     }
 }
 
-void Issue_Unit::Fetch_Decode_Instruction(int (&instruct)[4]) {
+bool Issue_Unit::Fetch_Decode_Instruction(int (&instruct)[4]) {
     string Instruction;
     int count = 1;
     bool done = true;
@@ -219,6 +224,7 @@ void Issue_Unit::Fetch_Decode_Instruction(int (&instruct)[4]) {
         cout << "Issued all instructions." << endl;
         instructions_over = true;
     }
+    return instructions_over;
 
 }
 

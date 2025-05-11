@@ -12,7 +12,7 @@ SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
 
 # Output executable name
-TARGET := $(BUILD_DIR)/app
+TARGET := $(BUILD_DIR)/my_program
 
 # Default rule
 all: $(TARGET)

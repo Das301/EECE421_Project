@@ -41,16 +41,6 @@ int main() {
             break;
         } else{
             if(file_checking(file_name)){
-                
-                //this part to be controlled by master processor
-                // Issue_Unit unit(file_name);
-                // Register_File reg_unit;
-                // Register_Status reg_stat_unit;
-                // Functional_Unit MUL_DIV(2, 10, 20);
-                // Memory_Unit Memory;
-                // int instruct[4] = {-1, -1, -1, -1};
-                // unit.Fetch_Decode_Instruction(instruct);
-                // int result[2] = {-1, -1};
                 Processor CPU(file_name);
                 CPU.Run_Simulation();
                 CPU.Print_Execution_Diagnostics();

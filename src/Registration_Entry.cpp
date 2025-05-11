@@ -4,12 +4,24 @@ Registration_Entry::Registration_Entry(int ID) {
     station_ID = ID;
 }
 
+int Registration_Entry::Return_ID(){
+    return station_ID;
+}
+
 bool Registration_Entry::Check_Busy() {
     return busy;
 }
 
 bool Registration_Entry::Check_Available() {
     return !busy;
+}
+
+bool Registration_Entry::Check_Sent_To_Unit() {
+    return sent_to_unit;
+}
+
+void Registration_Entry::Set_Sent_To_Unit() {
+    sent_to_unit = true;
 }
 
 bool Registration_Entry::Operands_Ready() {
@@ -69,14 +81,48 @@ void Registration_Entry::Get_Instruction_Complete(int (&instruct_details)[4]) {
 }
 
 void Registration_Entry::Reset_Entry() {
-    int op = 0;
-    int V1 = 0;
-    int V2 = 0;
-    int Q1 = 0;
-    int Q2 = 0;
+    op = 0;
+    V1 = 0;
+    V2 = 0;
+    Q1 = 0;
+    Q2 = 0;
 
-    int V_store = 0;
-    int Q_store = 0;
+    V_store = 0;
+    Q_store = 0;
 
-    bool busy = false;
+    busy = false;
+    sent_to_unit = false;
+    address_age = 0;
+}
+
+void Registration_Entry::Increment_Occupied_Time(){
+    occupied_time++;
+}
+
+int Registration_Entry::Get_Occupied_Time(){
+    return occupied_time;
+}
+
+void Registration_Entry::Increment_Address_Age(){
+    address_age++;
+}
+
+int Registration_Entry::Get_Address_Age(){
+    return address_age;
+}
+
+ostream& operator<<(ostream& os, const Registration_Entry& obj){
+    os << "Station ID: " << obj.station_ID << endl;
+    os << "Busy: " << obj.busy << endl;
+    os << "Operation: " << obj.op << endl;
+    os << "V1: " << obj.V1 << endl;
+    os << "V2: " << obj.V2 << endl;
+    os << "Q1: " << obj.Q1 << endl;
+    os << "Q2: " << obj.Q2 << endl;
+    if(obj.op==5){
+        os << "V_Store: " << obj.V_store << endl;
+        os << "Q_Store: " << obj.Q_store << endl;
+    }
+    os << "---------------------------" << endl;
+    return os;
 }

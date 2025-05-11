@@ -21,13 +21,14 @@ class Processor {
         Functional_Unit MUL_DIV;
         Functional_Unit LOAD_STORE;
 
+        int entry_id = 1;
+
         Registration_Station ALUs;
         Registration_Station MUL_DIV_STAT;
         Registration_Station LOAD_STAT;
         Registration_Station STORE_STAT;
-
-        int entry_id = 1;
         
+        bool execution_complete = false;
         bool instruction_issue_complete = false;
         bool instruction_issue_stall = false;
         bool instruction_error = false;
@@ -36,7 +37,11 @@ class Processor {
         bool CDB_Available = true;
         int instruct[4] = {-1, -1, -1, -1};
         int result[2] = {-1, -1};
-    
+
+        int store_station_ID=-1;
+        int total_clock_cycles=0;
+        int structural_stall_cycles = 0;
+        
     public:
         Processor(std::string file_name) : ALU1(1, 2, 2),
          ALU2(1, 2, 2), MUL_DIV(2, 10, 20), LOAD_STORE(3, 5, 5),
@@ -48,11 +53,19 @@ class Processor {
         
         //step 1 functions
         void Pass_Instruction_To_Unit(int type, int operand1, int operand2, int operand3, bool operation);
+        bool Check_Store_Buffer(int load_index);
+        bool Check_Load_Buffer(int store_index);
         void Check_Ready_Registration_Entry();
-        
+
         //step 2 functions
         void Update_Stations_Entries();
         void Update_Register_File();
+
+        void Clear_ALU_Station_Entry();
+        void Clear_MUL_DIV_Station_Entry();
+        void Clear_LOAD_Station_Entry();
+        void Clear_STORE_Station_Entry(int station_ID);
+
         void Write_Output_Ready_Func_Units();
 
         //step 3 functions
@@ -63,13 +76,15 @@ class Processor {
 
         int Get_Available_ALU_Station();
         int Get_Available_MUL_DIV_Station();
-        int Get_Available_LAOD_Station();
+        int Get_Available_LOAD_Station();
         int Get_Available_STORE_Station();
 
         void Pass_Instruction_To_ALU_Station(int index);
         void Pass_Instruction_To_MUL_DIV_Station(int index);
-        void Pass_Instruction_To_LAOD_Station(int index);
+        void Pass_Instruction_To_LOAD_Station(int index);
         void Pass_Instruction_To_STORE_Station(int index);
+
+        bool Check_Execution_Complete();
 };
 
 #endif

@@ -1,7 +1,11 @@
 #ifndef FUNC_H
 #define FUNC_H
+#include <iostream>
 
 #include "Memory_Unit.h"
+
+using namespace std;
+
 
 class Functional_Unit {
     private:
@@ -39,6 +43,8 @@ class Functional_Unit {
         void Return_Result(int (&arr_result)[2], Memory_Unit* memory=nullptr);
 
         void Reset_Unit();
+
+        friend ostream& operator<<(ostream& os, const Functional_Unit& obj);
 };
 
 #endif

@@ -55,10 +55,10 @@ void Issue_Unit::Decode_Instruction(std::string instruction, int (&instruct)[4])
             switch (it->second)
             {
             case 5:
-                load_op=true;
+                store_op=true;
                 break;
             case 6:
-                store_op=true;
+                load_op=true;
                 break;
             default:
                 load_op=false;

@@ -46,8 +46,6 @@ bool Processor::Check_Store_Buffer(int load_index){
     STORE_STAT.Retrieve_Q_From_Entry(0, 1)==0 && STORE_STAT.Retrieve_Q_From_Entry(0, 2)==0){
         
         STORE_STAT.Retrieve_Instruction_From_Entry(0, temp);
-        cout << temp[0]+temp[1] << endl;
-        cout << instruct[0]+instruct[1] << endl;
 
         if(temp[0]+temp[1]==instruct[0]+instruct[1] && 
             STORE_STAT.Get_Entry_Address_Age(0) > LOAD_STAT.Get_Entry_Address_Age(load_index)){
@@ -96,6 +94,19 @@ void Processor::Check_Ready_Registration_Entry() {
                 ALUs.Retrieve_Instruction_From_Entry(i, instruct);
                 Pass_Instruction_To_Unit(instruct[3], instruct[0], instruct[1], instruct[2], !(instruct[3]-1));
                 ALUs.Set_Entry_Sent_To_Unit(i);
+            } else {
+                if (!stall_counted){
+                    stall_counted = true;
+                    structural_stall_cycles++;
+                }
+            }
+        }
+
+        if(ALUs.Check_Entry_Busy(i)){
+            ALUs.Increment_Entry_Utilization(i);
+            if(!ALUs.Check_Entry_Ready(i) && !stall_counted) {
+                stall_counted = true;
+                structural_stall_cycles++;
             }
         }
     }
@@ -107,6 +118,19 @@ void Processor::Check_Ready_Registration_Entry() {
                 MUL_DIV_STAT.Retrieve_Instruction_From_Entry(j, instruct);
                 Pass_Instruction_To_Unit(instruct[3], instruct[0], instruct[1], instruct[2], !(instruct[3]-3));
                 MUL_DIV_STAT.Set_Entry_Sent_To_Unit(j);
+            } else {
+                if (!stall_counted){
+                    stall_counted = true;
+                    structural_stall_cycles++;
+                }
+            }
+        }
+
+        if(MUL_DIV_STAT.Check_Entry_Busy(j)){
+            MUL_DIV_STAT.Increment_Entry_Utilization(j);
+            if(!MUL_DIV_STAT.Check_Entry_Ready(j) && !stall_counted) {
+                stall_counted = true;
+                structural_stall_cycles++;
             }
         }
     }
@@ -119,9 +143,27 @@ void Processor::Check_Ready_Registration_Entry() {
                 if (!Check_Store_Buffer(k)){
                     Pass_Instruction_To_Unit(instruct[3], instruct[0], instruct[1], instruct[2], !(instruct[3]-5));
                     LOAD_STAT.Set_Entry_Sent_To_Unit(k);
+                } else {
+                    if (!stall_counted){
+                        stall_counted = true;
+                        structural_stall_cycles++;
+                    }
+                }
+            } else {
+                if (!stall_counted){
+                    stall_counted = true;
+                    structural_stall_cycles++;
                 }
             }
             LOAD_STAT.Increment_Entry_Address_Age(k);
+        }
+
+        if(LOAD_STAT.Check_Entry_Busy(k)){
+            LOAD_STAT.Increment_Entry_Utilization(k);
+            if(!LOAD_STAT.Check_Entry_Ready(k) && !stall_counted) {
+                stall_counted = true;
+                structural_stall_cycles++;
+            }
         }
     }
 
@@ -134,13 +176,32 @@ void Processor::Check_Ready_Registration_Entry() {
                     Pass_Instruction_To_Unit(instruct[3], instruct[0], instruct[1], instruct[2], !(instruct[3]-5));
                     store_station_ID=STORE_STAT.Get_Entry_ID(z);
                     STORE_STAT.Set_Entry_Sent_To_Unit(z);
+                } else {
+                    if (!stall_counted){
+                        stall_counted = true;
+                        structural_stall_cycles++;
+                    }
+                }
+            } else {
+                if (!stall_counted){
+                    stall_counted = true;
+                    structural_stall_cycles++;
                 }
             }
             
         }
         if(STORE_STAT.Check_Entry_Busy(z) && STORE_STAT.Retrieve_Q_From_Entry(z, 1)==0 && STORE_STAT.Retrieve_Q_From_Entry(z, 2)==0){
-        STORE_STAT.Increment_Entry_Address_Age(z);
-    }
+            STORE_STAT.Increment_Entry_Address_Age(z);
+        }
+
+        if(STORE_STAT.Check_Entry_Busy(z)){
+            STORE_STAT.Increment_Entry_Utilization(z);
+
+            if(!STORE_STAT.Check_Entry_Ready(z) && !stall_counted) {
+                stall_counted = true;
+                structural_stall_cycles++;
+            }
+        }
     }
 }
 
@@ -465,6 +526,7 @@ void Processor::Run_Simulation() {
                     cout << "Error occured during instruction decoding. Terminating the program.";
                     return;
                 }
+                total_instructions_number++;
             }
 
             switch (instruct_issue[0])
@@ -477,9 +539,15 @@ void Processor::Run_Simulation() {
                     if(instruction_issue_stall){
                         instruction_issue_stall=false;
                     }
+                } else {
+                    instruction_issue_stall = true;
+                    if(!stall_counted){
+                        structural_stall_cycles++;
+                        stall_counted = true;
+                    }
+                    
                 }
-                //cout << "\n" << endl;
-                //cout << ALU2;
+                
                 break;
             
             case 3:
@@ -489,6 +557,12 @@ void Processor::Run_Simulation() {
                     Pass_Instruction_To_MUL_DIV_Station(temp_ID);
                     if(instruction_issue_stall){
                         instruction_issue_stall=false;
+                    }
+                } else {
+                    instruction_issue_stall = true;
+                    if(!stall_counted){
+                        structural_stall_cycles++;
+                        stall_counted = true;
                     }
                 }
                 break;
@@ -500,6 +574,12 @@ void Processor::Run_Simulation() {
                     if(instruction_issue_stall){
                         instruction_issue_stall=false;
                     }
+                } else {
+                    instruction_issue_stall = true;
+                    if(!stall_counted){
+                        structural_stall_cycles++;
+                        stall_counted = true;
+                    }
                 }
                 break;
             
@@ -509,6 +589,12 @@ void Processor::Run_Simulation() {
                     Pass_Instruction_To_LOAD_Station(temp_ID);
                     if(instruction_issue_stall){
                         instruction_issue_stall=false;
+                    }
+                } else {
+                    instruction_issue_stall = true;
+                    if(!stall_counted){
+                        structural_stall_cycles++;
+                        stall_counted = true;
                     }
                 }
                 break;
@@ -521,10 +607,76 @@ void Processor::Run_Simulation() {
             execution_complete = Check_Execution_Complete();
         }
         total_clock_cycles++;
-        
+        stall_counted = false;
     }
+    
+}
 
+void Processor::Print_Execution_Diagnostics(){
+    cout << "\nDiagnostics of program execution: " << endl;
+    
     cout << "Total cycles: " << total_clock_cycles << endl;
+    
+    cout << "------------------------------------" << endl;
+
+    cout << "\nFinal register file: " << endl;
     cout << reg_unit;
     
+    cout << "------------------------------------" << endl;
+
+    cout << "\nAverage number of instructions per cycle (IPC): " << static_cast<float>(total_instructions_number)/total_clock_cycles << endl;
+
+    cout << "------------------------------------" << endl;
+
+    cout << "\nReservation Stations Occupancy: " << endl;
+    cout << "\nALU station:" << endl;
+    cout << "Entry 1: " << endl;
+    cout << "Cycles " << ALUs.Get_Entry_Utilization(0) << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(ALUs.Get_Entry_Utilization(0))/total_clock_cycles << endl;
+    
+    cout << "\nEntry 2: " << endl;
+    cout << "Cycles " << ALUs.Get_Entry_Utilization(1) << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(ALUs.Get_Entry_Utilization(1))/total_clock_cycles << endl;
+    
+    cout << "\nEntry 3: " << endl;
+    cout << "Cycles " << ALUs.Get_Entry_Utilization(2) << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(ALUs.Get_Entry_Utilization(2))/total_clock_cycles << endl;
+
+    cout << "\nMUL/DIV station:" << endl;
+    cout << "Entry 1: " << endl;
+    cout << "Cycles " << MUL_DIV_STAT.Get_Entry_Utilization(0) << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(MUL_DIV_STAT.Get_Entry_Utilization(0))/total_clock_cycles << endl;
+    
+    cout << "\nEntry 2: " << endl;
+    cout << "Cycles " << MUL_DIV_STAT.Get_Entry_Utilization(1) << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(MUL_DIV_STAT.Get_Entry_Utilization(1))/total_clock_cycles << endl;
+
+    float temp = static_cast<float>(ALUs.Get_Entry_Utilization(0) + ALUs.Get_Entry_Utilization(1) + ALUs.Get_Entry_Utilization(2) + MUL_DIV_STAT.Get_Entry_Utilization(0) + MUL_DIV_STAT.Get_Entry_Utilization(1))/5;
+
+    cout << "\nAverage reservation station occupancy (in percentage): " << temp/total_clock_cycles << endl;
+
+    cout << "------------------------------------" << endl;
+
+    cout << "\nLOAD and STORE buffer utilization:" << endl;
+
+    cout << "\nLOAD buffer:" << endl;
+    cout << "Entry 1: " << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(LOAD_STAT.Get_Entry_Utilization(0))/total_clock_cycles << endl;
+    
+    cout << "\nEntry 2: " << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(LOAD_STAT.Get_Entry_Utilization(1))/total_clock_cycles << endl;
+
+    cout << "\nSTORE buffer:" << endl;
+    cout << "Entry 1: " << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(STORE_STAT.Get_Entry_Utilization(0))/total_clock_cycles << endl;
+    
+    cout << "\nEntry 2: " << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(STORE_STAT.Get_Entry_Utilization(1))/total_clock_cycles << endl;
+
+    cout << "------------------------------------" << endl;
+
+    cout << "\nStall cycles due to structural hazards: " << endl;
+    cout << "\nNumber of cycles: " << structural_stall_cycles << endl;
+    cout << "Percentage of total cycles: " << static_cast<float>(structural_stall_cycles)/total_clock_cycles << endl;
+
 }

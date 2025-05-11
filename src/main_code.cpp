@@ -53,10 +53,11 @@ int main() {
                 // int result[2] = {-1, -1};
                 Processor CPU(file_name);
                 CPU.Run_Simulation();
+                CPU.Print_Execution_Diagnostics();
 
-                cout << "Enter the name of the next program file (must be .txt) or QUIT to leave the simulator: ";
+                cout << "\nEnter the name of the next program file (must be .txt) or QUIT to leave the simulator: ";
             } else {
-                cout << "Invalid file type! Please enter a valid .txt file or QUIT to leave: " << endl;
+                cout << "\nInvalid file type! Please enter a valid .txt file or QUIT to leave: " << endl;
             }
         } 
     }

@@ -70,6 +70,14 @@ int Registration_Station::Get_Entry_Address_Age(int index){
     return entries[index].Get_Address_Age();
 }
 
+void Registration_Station::Increment_Entry_Utilization(int index){
+    entries[index].Increment_Occupied_Time();
+}
+
+int Registration_Station::Get_Entry_Utilization(int index){
+    return entries[index].Get_Occupied_Time();
+}
+
 ostream& operator<<(ostream& os, const Registration_Station& obj){
     os << "Here is the content of this reservation system." << endl;
 

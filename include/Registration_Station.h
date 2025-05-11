@@ -24,6 +24,9 @@ class Registration_Station {
 
         void Increment_Entry_Address_Age(int index);
         int Get_Entry_Address_Age(int index);
+
+        void Increment_Entry_Utilization(int index);
+        int Get_Entry_Utilization(int index);
         
         void Retrieve_Instruction_From_Entry(int index, int (&instr)[4]);
         

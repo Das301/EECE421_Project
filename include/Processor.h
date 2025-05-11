@@ -41,6 +41,8 @@ class Processor {
         int store_station_ID=-1;
         int total_clock_cycles=0;
         int structural_stall_cycles = 0;
+        int total_instructions_number = 0;
+        bool stall_counted = false;
         
     public:
         Processor(std::string file_name) : ALU1(1, 2, 2),
@@ -85,6 +87,8 @@ class Processor {
         void Pass_Instruction_To_STORE_Station(int index);
 
         bool Check_Execution_Complete();
+
+        void Print_Execution_Diagnostics();
 };
 
 #endif
